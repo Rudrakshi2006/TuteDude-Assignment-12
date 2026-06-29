@@ -2,117 +2,62 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 import time
 
-# -----------------------------
-# Create Chrome WebDriver
-# -----------------------------
 driver = webdriver.Chrome()
 
-# Maximize browser window
 driver.maximize_window()
 
-try:
-    # -----------------------------
-    # Open Google
-    # -----------------------------
-    driver.get("https://www.google.com")
-    print("Google opened successfully.")
+# Open Google
+driver.get("https://www.google.com")
+print("Google opened")
 
-    time.sleep(2)
+time.sleep(2)
 
-    # -----------------------------
-    # Search on Google (By.NAME)
-    # -----------------------------
-    search_box = driver.find_element(By.NAME, "q")
-    search_box.send_keys("Amazon India")
-    search_box.submit()
+# Search in Google
+search = driver.find_element(By.NAME, "q")
+search.send_keys("Python Selenium")
+search.submit()
 
-    print("Google Search Completed.")
+print("Search completed")
 
-    time.sleep(3)
+time.sleep(3)
 
-    # -----------------------------
-    # Open Amazon directly
-    # -----------------------------
-    driver.get("https://www.amazon.in")
-    print("Amazon website opened.")
+# Open Books to Scrape
+driver.get("http://books.toscrape.com/")
+print("Books website opened")
 
-    time.sleep(3)
+time.sleep(2)
 
-    # -----------------------------
-    # Refresh Page
-    # -----------------------------
-    driver.refresh()
-    print("Amazon page refreshed.")
+# Refresh page
+driver.refresh()
+print("Page refreshed")
 
-    time.sleep(2)
+time.sleep(2)
 
-    # -----------------------------
-    # Search Product (By.ID)
-    # -----------------------------
-    search_bar = driver.find_element(By.ID, "twotabsearchtextbox")
-    search_bar.send_keys("Laptop")
+# Click Travel category
+travel = driver.find_element(By.LINK_TEXT, "Travel")
+travel.click()
 
-    search_button = driver.find_element(By.ID, "nav-search-submit-button")
-    search_button.click()
+print("Travel category opened")
 
-    print("Laptop search completed.")
+time.sleep(2)
 
-    time.sleep(4)
+# Print first few book titles
+books = driver.find_elements(By.CLASS_NAME, "product_pod")
 
-    # -----------------------------
-    # Extract Product Titles
-    # (find_elements + CLASS_NAME)
-    # -----------------------------
-    products = driver.find_elements(By.CLASS_NAME, "a-size-medium")
+print("Book Names")
 
-    print("\nTop Product Titles:\n")
+for book in books[:5]:
+    title = book.find_element(By.TAG_NAME, "h3")
+    print(title.text)
 
-    count = 0
-    for product in products:
-        title = product.text.strip()
-        if title:
-            count += 1
-            print(f"{count}. {title}")
-        if count == 10:
-            break
+time.sleep(2)
 
-    if count == 0:
-        print("No product titles found.")
+# XPath example
+price = driver.find_element(By.XPATH, "//p[@class='price_color']")
+print("First Book Price:", price.text)
 
-    time.sleep(2)
+time.sleep(3)
 
-    # -----------------------------
-    # Click Today's Deals
-    # (LINK_TEXT)
-    # -----------------------------
-    driver.get("https://www.amazon.in")
+driver.quit()
 
-    time.sleep(3)
-
-    try:
-        deals = driver.find_element(By.LINK_TEXT, "Today's Deals")
-        deals.click()
-        print("\nToday's Deals page opened.")
-    except:
-        print("\n'Today's Deals' link not found.")
-
-    time.sleep(3)
-
-    # -----------------------------
-    # Find element using XPath
-    # -----------------------------
-    try:
-        logo = driver.find_element(By.XPATH, "//a[@id='nav-logo-sprites']")
-        print("\nXPath Example Successful")
-        print("Logo Text:", logo.get_attribute("aria-label"))
-    except:
-        print("\nXPath element not found.")
-
-    time.sleep(2)
-
-finally:
-    # -----------------------------
-    # Close Browser
-    # -----------------------------
-    driver.quit()
-    print("\nBrowser Closed Successfully.")
+print("Browser Closed")
